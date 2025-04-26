@@ -171,15 +171,6 @@ public class Logic {
 		for(int i = 0; i < 52; i++) {
 			backOfCards[i] = new ImgContainer(0, 0, "backOfCard.png");
 		}
-		
-		//Array som visar vilka kort som är i extrahögen
-		for(int i = 0; i < 52; i++) {
-			if(i < 28) {
-				isInExtraDeck[i] = false;
-			}else {
-				isInExtraDeck[i] = true;
-			}
-		}
 	}
 	
 	//Blanda kortleken
@@ -216,8 +207,6 @@ public class Logic {
 	
 	//Byter plats på kortet i x-led
 	public ImgContainer[] setXPos(int deckPos, int xPos){
-		int deckPos1 = deckPos / 13;
-		int deckPos2 = deckPos % 13;
 		ImgContainer temp = Kortlek[deckPos];
 		temp.setX(xPos * 85 + 110);
 		Kortlek[deckPos] = temp;
@@ -226,8 +215,6 @@ public class Logic {
 	
 	//Byter plats på kortet i y-led
 	public ImgContainer[] setYPos(int deckPos, int yPos){
-		int deckPos1 = deckPos / 13;
-		int deckPos2 = deckPos % 13;
 		ImgContainer temp = Kortlek[deckPos];
 		temp.setY((yPos + 1) * 15);
 		Kortlek[deckPos] = temp;
@@ -241,10 +228,10 @@ public class Logic {
 	}
 	
 	public void switchGridPos(int xPos, int yPos) {
-		if(grid[(xPos - 110) / 85][yPos / 15 -1]) {
-			grid[(xPos - 110) / 85][yPos / 15 -1] = false;
+		if(grid[(xPos - 110) / 85][yPos / 15 - 1]) {
+			grid[(xPos - 110) / 85][yPos / 15 - 1] = false;
 		}else {
-			grid[(xPos - 110) / 85][yPos / 15 -1] = true;
+			grid[(xPos - 110) / 85][yPos / 15 - 1] = true;
 		}
 	}
 	
@@ -291,8 +278,7 @@ public class Logic {
 	
 	//kollar om man trycker innanför "spelplanen"
 	public boolean checkIfInGrid(int xPos, int yPos) {
-		//if(xPos >= 110 && xPos <= 677) {
-		if(xPos <= 677) {
+		if(xPos >= 110 && xPos <= 677) {
 			return true;	
 		} else {
 			return false;
@@ -316,30 +302,12 @@ public class Logic {
 		}
 	}
 	
-	public ImgContainer[] orderByY(ImgContainer[] order) {
-		ImgContainer Imgtemp;
-		int temp1;
-		int temp2;
-		
-		for(int i = 51; i > 0; i--) {
-			for(int k = 0; k < i; k++) {
-				temp1 = order[k].getY();
-				temp2 = order[k + 1].getY();
-				if(temp1 > temp2) {
-					Imgtemp = order[k];
-					order[k] = order[k + 1];
-					order[k + 1] = Imgtemp;
-				}
-			}
+	public boolean checkIfExtraDeckBack(int xPos, int yPos) {
+		if(xPos <= 72 && yPos <= 97) {
+			return true;
+		}else {
+			return false;
 		}
-//	    int[] Card = new int[51];
-//	    
-//	    for(int i = 0; i < 51; i++) {
-//	    	Card[i] = order[i].getY();
-//	    }
-//
-//	    Arrays.sort(order, Comparator.comparingInt(ImgContainer::getY)); 
-		return order;
 	}
 	
 	public ImgContainer setBackOfCard(int i) {
@@ -362,6 +330,85 @@ public class Logic {
 		}else {
 			isInExtraDeck[deckPos] = true;
 		}
+	}
+	
+	public boolean clickTopOfGrid(int xPos, int yPos) {
+		boolean top = false;
+		for(int i = 0; i < 7; i++) {
+			if(xPos - 110 - 85 * i >= 0 && xPos - 110 - 85 * i <= 57 && yPos <= 97) {
+				top = true;
+			}
+		}
+		return top;
+	}
+	
+	public int getTopXPos(int mouseX) {
+		int xPos = 0;
+		for(int i = 0; i < 7; i++) {
+			if(mouseX - 110 - 85 * i >= 0 && mouseX - 110 - 85 * i <= 57) {
+				xPos = 110 + 85 * i;
+			}
+		}
+		
+		return xPos;
+	}
+	
+	public boolean clickInEndPosition(int mouseX, int mouseY) {
+		boolean end = false;
+		for(int i = 0; i < 4; i++) {
+			if(mouseX >= 700 && mouseY > 20 + 90 * i && mouseY < 102 + 90 * i) {
+				end = true;
+			}
+		}
+		return end;
+	}
+	
+	public int getEndYPos(int mouseY) {
+		int yPos = 0;
+		for(int i = 0; i < 4; i++) {
+			if(mouseY > 20 + 90 * i && mouseY < 102 + 90 * i) {
+				yPos = 20 + 90 * i;
+			}
+		}
+		return yPos;
+	}
+	
+	public ImgContainer[] orderDeckByShuffle(int[] shuffled, ImgContainer[] order) {
+		ImgContainer ImgTemp;
+		int temp1;
+		int temp2;
+		
+		for(int i = 51; i > 0; i--) {
+			for(int k = 0; k < i; k++) {
+				temp1 = shuffled[k];
+				temp2 = shuffled[k + 1];
+				if(temp1 < temp2) {
+					ImgTemp = order[k];
+					order[k] = order[k + 1];
+					order[k + 1] = ImgTemp;
+				}
+			}
+		}
+		return order;
+	}
+	
+	public ImgContainer[] orderByY(ImgContainer[] order) {
+		ImgContainer Imgtemp;
+		int temp1;
+		int temp2;
+		
+		for(int i = 51; i > 0; i--) {
+			for(int k = 0; k < i; k++) {
+				temp1 = order[k].getY();
+				temp2 = order[k + 1].getY();
+				if(temp1 > temp2) {
+					Imgtemp = order[k];
+					order[k] = order[k + 1];
+					order[k + 1] = Imgtemp;
+				}
+			}
+		}
+		return order;
 	}
 	
 }
