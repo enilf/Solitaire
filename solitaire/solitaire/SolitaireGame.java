@@ -156,7 +156,7 @@ public class SolitaireGame implements MouseListener, KeyListener{
 								int turnCard = shuffled[k];
 								int checkX = card[turnCard].getX();
 								int checkY = card[turnCard].getY();
-								if(checkX == oldXPos && checkY == oldYPos - 15) {
+								if(checkX == oldXPos && checkY == oldYPos - 15 && deck.getTurnedCard(turnCard)) {
 									deck.turnCard(turnCard);
 									card[turnCard] = Deck[turnCard];
 								}
@@ -181,6 +181,9 @@ public class SolitaireGame implements MouseListener, KeyListener{
 						selectedCard = 52;
 						selectedCard2 = 52;
 						extraDeckAmount--;
+						if(extraDeckY == prevExtraDeckAmount) {
+							prevExtraDeckAmount--;
+						}
 					}
 					//De-select om samma kort klickas två gånger
 				}else if(selectedCard2 == selectedCard){
@@ -211,11 +214,16 @@ public class SolitaireGame implements MouseListener, KeyListener{
 						}
 						card[selectedCard].setX(xPos);
 						card[selectedCard].setY(yPos);
-						int aboveOldX = (oldXPos - 110) / 85 - 1;
-						int aboveOldY = oldYPos / 15 - 2;
-						if(aboveOldX >= 0 && aboveOldY >= 0 && deck.getGridPos(aboveOldX, aboveOldY)) {
-							deck.turnCard(selectedCard - 1);
-							card[selectedCard - 1] = Deck[selectedCard - 1];
+						if(oldYPos >= 0) {
+							for(int k = 0; k < 52; k++) {
+								int turnCard = shuffled[k];
+								int checkX = card[turnCard].getX();
+								int checkY = card[turnCard].getY();
+								if(checkX == oldXPos && checkY == oldYPos - 15 && deck.getTurnedCard(turnCard)) {
+									deck.turnCard(turnCard);
+									card[turnCard] = Deck[turnCard];
+								}
+							}
 						}
 						selectedCard = 52;
 						selectedCard2 = 52;
@@ -233,18 +241,12 @@ public class SolitaireGame implements MouseListener, KeyListener{
 						}
 						card[selectedCard].setX(xPos);
 						card[selectedCard].setY(yPos);
-//						int aboveOldX = (oldXPos - 110) / 85 - 1;
-//						int aboveOldY = oldYPos / 15 - 2;
-//						if(aboveOldX >= 0 && aboveOldY >= 0 && deck.getGridPos(aboveOldX, aboveOldY)) {
-//							deck.turnCard(selectedCard - 1);
-//							card[selectedCard - 1] = Deck[selectedCard - 1];
-//						}
 						if(oldYPos >= 0) {
 							for(int k = 0; k < 52; k++) {
 								int turnCard = shuffled[k];
 								int checkX = card[turnCard].getX();
 								int checkY = card[turnCard].getY();
-								if(checkX == oldXPos && checkY == oldYPos - 15) {
+								if(checkX == oldXPos && checkY == oldYPos - 15 && deck.getTurnedCard(turnCard)) {
 									deck.turnCard(turnCard);
 									card[turnCard] = Deck[turnCard];
 								}
